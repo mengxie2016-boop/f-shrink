@@ -6,8 +6,8 @@ f-Shrink: A self-adaptive contraction operator that never decays to zero. Only 0
   
   **A self-adaptive contraction operator that never decays to zero**
   
-  [![Paper I](https://img.shields.io/badge/Paper%20I-Theory-blue)](https://doi.org/10.5281/zenodo.18485110)
-  [![Paper II](https://img.shields.io/badge/Paper%20II-Application-blue)](https://doi.org/10.5281/zenodo.18694170)
+  [![Paper I](https://img.shields.io/badge/Theory%20Paper-Zenodo-blue)](https://doi.org/10.5281/zenodo.18485110)
+  [![Paper II](https://img.shields.io/badge/Application%20Paper-Zenodo-blue)](https://doi.org/10.5281/zenodo.18694170)
   [![PyTorch](https://img.shields.io/badge/PyTorch-≥1.9-orange)](https://pytorch.org)
   [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
   [![Colab](https://img.shields.io/badge/Open%20in-Colab-F9AB00)](https://colab.research.google.com/drive/1i7TJTGGvxji7sQD0ZESarBJ18Bcbl5oA)
@@ -36,8 +36,8 @@ where \(f\) is the unique positive real solution to \(\ln f + \frac{\pi}{2}f = 0
 
 | Method | Final Loss (CIFAR-10) | Final Learning Rate | Can keep learning? |
 |--------|----------------------|---------------------|---------------------|
-| Cosine Decay | **0.9969** | 0.0003 | ❌ No |
-| **f-Shrink (β=0.035)** | 1.0986 | **0.4745** | ✅ **Yes** |
+| Cosine Decay | 0.9969 | 0.0003 | ❌ No |
+| **f-Shrink (β=0.035)** | **1.0986** | **0.4745** | ✅ **Yes** |
 
 **Only 0.1 worse than Cosine, but keeps learning forever.**
 
@@ -71,8 +71,6 @@ pip install -e .
 
 ## 🚀 Quick Start
 
-### Basic Usage
-
 ```python
 import torch
 import torch.nn as nn
@@ -85,8 +83,8 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 # Replace Cosine scheduler with f-Shrink
 scheduler = FShrinkScheduler(
     optimizer, 
-    mode='decay',      # 'decay' for smooth convergence to f
-    decay=0.035,       # optimal value from experiments
+    mode='decay',
+    decay=0.035,  # optimal value from experiments
     f=0.4745409995126511
 )
 
@@ -98,51 +96,6 @@ for epoch in range(num_epochs):
         scheduler.step()  # one line replacement
 ```
 
-### Available Modes
-
-```python
-# Fast mode: directly apply F(x) each step
-scheduler = FShrinkScheduler(optimizer, mode='fast')
-
-# Smooth mode: blend between current lr and F(lr)
-scheduler = FShrinkScheduler(optimizer, mode='smooth', alpha=0.1)
-
-# Decay mode (recommended): exponentially decay to f
-scheduler = FShrinkScheduler(optimizer, mode='decay', decay=0.035)
-```
-
----
-
-## 📊 Optimal Parameters
-
-Based on extensive experiments on CIFAR-10:
-
-| Mode | Parameter | Optimal Value | Final Loss | Final LR |
-|------|-----------|---------------|------------|----------|
-| Cosine | T_max | depends | 0.9969 | 0.0003 |
-| f-Shrink (decay) | β = 0.035 | **0.035** | **1.0986** | **0.4745** |
-| f-Shrink (decay) | β = 0.05 | - | 1.131 | 0.4745 |
-| f-Shrink (decay) | β = 0.03 | - | 1.1177 | 0.4745 |
-| f-Shrink (decay) | β = 0.04 | - | 1.2058 | 0.4745 |
-
-**Recommended: use `decay=0.035` for best trade-off between accuracy and convergence speed.**
-
----
-
-## 🔬 Theoretical Background
-
-f-Shrink originates from the study of a complex dynamical system with two dual spaces:
-
-- **Z-space** (prototype): \(z_{n+1} = (z_n + e^{-\pi z_n/2})/2\)
-- **U-space** (theoretically proven): \(u_{n+1} = \sqrt{u_n} \cdot e^{-\pi u_n/4}\)
-
-The operator \(\mathcal{F}(x)\) is the real projection of the U-space iteration, inheriting its guaranteed convergence properties.
-
-For details, see the full papers:
-
-- **Theory**: [Xie, M. (2026). *Global Dynamics of a Transcendental Iteration System Based on the Balance Equation*. Zenodo.](https://doi.org/10.5281/zenodo.18485110)
-- **Applications**: [Xie, M. (2026). *f-Shrink: A Self-Adaptive Contraction Operator Derived from Transcendental Dynamics and Its Applications in Deep Learning*. Zenodo.](https://doi.org/10.5281/zenodo.18694170)
-
 ---
 
 ## 🧪 Run Experiments Yourself
@@ -153,23 +106,26 @@ Click the button above to run all f-Shrink experiments in Google Colab.
 
 ---
 
-## 📈 Use Cases
-
-| Scenario | Why f-Shrink |
-|----------|--------------|
-| **Continual Learning** | Model must keep adapting to new data |
-| **Reinforcement Learning** | Exploration rate never decays to zero |
-| **Fine-tuning LLMs** | Stable small LR for long-term optimization |
-| **Autonomous Driving** | Environment constantly changing |
-| **Recommendation Systems** | User preferences evolve over time |
-
----
-
 ## 📚 Citation
 
 If you use f-Shrink in your research, please cite:
 
 **Theory paper:**
+
+```
+Xie, M. (2026). Global Dynamics of a Transcendental Iteration System Based on the Balance Equation. Zenodo.
+https://doi.org/10.5281/zenodo.18485110
+```
+
+**Application paper:**
+
+```
+Xie, M. (2026). f-Shrink: A Self-Adaptive Contraction Operator Derived from Transcendental Dynamics and Its Applications in Deep Learning [Data set]. Zenodo.
+https://doi.org/10.5281/zenodo.18694170
+```
+
+**BibTeX:**
+
 ```bibtex
 @article{xie2026global,
   title={Global Dynamics of a Transcendental Iteration System Based on the Balance Equation},
@@ -178,10 +134,7 @@ If you use f-Shrink in your research, please cite:
   year={2026},
   doi={10.5281/zenodo.18485110}
 }
-```
 
-**Application paper:**
-```bibtex
 @dataset{xie2026fshrink,
   title={f-Shrink: A Self-Adaptive Contraction Operator Derived from Transcendental Dynamics and Its Applications in Deep Learning},
   author={Xie, Meng},
@@ -191,21 +144,31 @@ If you use f-Shrink in your research, please cite:
 }
 ```
 
-Or in plain text:
-
-```
-Xie, M. (2026). Global Dynamics of a Transcendental Iteration System Based on the Balance Equation. Zenodo.
-https://doi.org/10.5281/zenodo.18485110
-
-Xie, M. (2026). f-Shrink: A Self-Adaptive Contraction Operator Derived from Transcendental Dynamics and Its Applications in Deep Learning [Data set]. Zenodo.
-https://doi.org/10.5281/zenodo.18694170
-```
-
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License
+
+Copyright (c) 2026 Meng Xie
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ---
 
