@@ -47,7 +47,7 @@ where \(f\) is the unique positive real solution to \(\ln f + \frac{\pi}{2}f = 0
 
 - ✅ **Never decays to zero** – learning rate stabilizes at \(f \approx 0.4745\)
 - ✅ **One-line replacement** for PyTorch's Cosine scheduler
-- ✅ **No hyperparameter tuning** – just set decay rate (optimal β=0.035)
+- ✅ **No hyperparameter tuning** – just set decay rate (suggested β=0.035 based on CIFAR-10 experiments)
 - ✅ **Theoretical guarantee** – rigorous convergence proof
 - ✅ **Works with any optimizer** – SGD, Adam, AdamW, etc.
 
@@ -84,7 +84,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 scheduler = FShrinkScheduler(
     optimizer, 
     mode='decay',
-    decay=0.035,  # optimal value from experiments
+    decay=0.035,  # suggested value from CIFAR-10 experiments
     f=0.4745409995126511
 )
 
